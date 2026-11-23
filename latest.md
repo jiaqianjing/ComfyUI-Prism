@@ -1,14 +1,14 @@
 # GitHub 每周关注度报告
 
 统计按 UTC 日界线；结束日期不含当天。
-本期：2026-11-15 至 2026-11-21；上期：2026-11-08 至 2026-11-14。
+本期：2026-11-16 至 2026-11-22；上期：2026-11-09 至 2026-11-15。
 
 | 指标 | 上期 | 本期 | 环比 |
 |---|---:|---:|---:|
-| 访问量 | 11 | 7 | -36.4% |
-| 访问每日独立数之和（非周去重） | 6 | 6 | +0.0% |
-| 完整克隆量 | 66 | 77 | +16.7% |
-| 完整克隆每日独立数之和（非周去重） | 49 | 58 | +18.4% |
+| 访问量 | 12 | 6 | -50.0% |
+| 访问每日独立数之和（非周去重） | 7 | 5 | -28.6% |
+| 完整克隆量 | 61 | 87 | +42.6% |
+| 完整克隆每日独立数之和（非周去重） | 46 | 67 | +45.7% |
 | Star 净增长 | 0 | 1 | — |
 | Fork 净增长 | 0 | 0 | — |
 | 订阅者 净增长 | 0 | 0 | — |
@@ -19,7 +19,7 @@ GitHub 数据可能延迟，后续采集会修订流量日数据。
 
 ## 最近一次采集
 
-2026-11-22T07:58:04.393309+00:00
+2026-11-23T08:58:24.283878+00:00
 
 累计：21 Stars · 2 Forks · 1 订阅者。
 
@@ -32,9 +32,10 @@ GitHub 数据可能延迟，后续采集会修订流量日数据。
 
 ### 热门页面
 
-- /jiaqianjing/ComfyUI-MidjourneyHub：10 次，9 独立访客
+- /jiaqianjing/ComfyUI-MidjourneyHub：9 次，8 独立访客
 - /jiaqianjing/ComfyUI-MidjourneyHub/branches：2 次，1 独立访客
 - /jiaqianjing/ComfyUI-MidjourneyHub/tree/metrics：2 次，1 独立访客
+- /jiaqianjing/ComfyUI-MidjourneyHub/blob/main/README.md：1 次，1 独立访客
 - /jiaqianjing/ComfyUI-MidjourneyHub/commits：1 次，1 独立访客
 - /jiaqianjing/ComfyUI-MidjourneyHub/commits/metrics：1 次，1 独立访客
 - /jiaqianjing/ComfyUI-MidjourneyHub/issues/6：1 次，1 独立访客
