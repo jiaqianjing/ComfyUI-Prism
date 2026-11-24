@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   collect:
-    if: github.repository == 'jiaqianjing/ComfyUI-MidjourneyHub'
+    if: github.repository == 'jiaqianjing/ComfyUI-Prism'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

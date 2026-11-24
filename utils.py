@@ -1,12 +1,7 @@
 """ utils tools"""
 import os
 import logging
-import configparser
 
-def load_config():
-    config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
-    return config
 
 # 创建一个 init logger，日志按文件大小切割日志，最多保存5个日志文件，日志级别为 DEBUG
 def init_logger():
@@ -18,7 +13,7 @@ def init_logger():
     log_dir = os.path.join(os.path.dirname(__file__), 'logs')
     if not os.path.exists(log_dir): # 如果日志文件夹不存在，则创建
         os.makedirs(log_dir)
-    log_file = os.path.join(log_dir, 'midjourney.log')
+    log_file = os.path.join(log_dir, 'image_nodes.log')
     file_handler = logging.FileHandler(log_file)
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(formatter)

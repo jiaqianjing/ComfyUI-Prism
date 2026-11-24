@@ -1,8 +1,9 @@
-"""ComfyUI GPT image node: prompt/options -> IMAGE batch; calls Yunwu HTTP API."""
+"""ComfyUI GPT image node: prompt/options -> IMAGE batch; calls the official image API."""
+import os
 import requests
 import json
 
-from .utils import load_config, init_logger
+from .utils import init_logger
 from .image_model_options import GPT_MODELS, GPT_QUALITIES, GPT_SIZES, validate_gpt_options
 from .image_response import decode_gpt_images
 
@@ -18,19 +19,10 @@ class GPTImageGenerateNode:
 
     def __init__(self):
         self.logger = init_logger()
-        config = load_config()
-        # 优先读取 GPT_IMAGE_API
-        if config.has_section('GPT_IMAGE_API'):
-            api_section = config['GPT_IMAGE_API']
-        else:
-            api_section = {}
-
-        self.api_key = api_section.get('api_key')
-        base_url_root = api_section.get('api_url', 'https://yunwu.ai').rstrip('/')
-        # GPT-Image-1 端点位于 /v1
-        self.base_url = f"{base_url_root}/v1"
+        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.base_url = "https://api.openai.com/v1"
         if not self.api_key:
-            raise ValueError("API key not found in config.ini under [GPT_IMAGE_API] section")
+            raise ValueError("Set OPENAI_API_KEY before starting ComfyUI")
 
     # ---------- ComfyUI 接口定义 ----------
     @classmethod
@@ -40,7 +32,7 @@ class GPTImageGenerateNode:
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
-                "model": (GPT_MODELS, {"default": "gpt-image-2-all"}),
+                "model": (GPT_MODELS, {"default": GPT_MODELS[0]}),
                 "n": ("INT", {"default": 1, "min": 1, "max": 10, "step": 1}),
                 "quality": (GPT_QUALITIES, {"default": "auto"}),
                 "size": (GPT_SIZES, {"default": "auto"}),
@@ -49,7 +41,7 @@ class GPTImageGenerateNode:
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "generate"
-    CATEGORY = "MidjourneyHub"
+    CATEGORY = "Prism"
 
     # ---------- 主功能 ----------
     def generate(self, prompt: str, model="gpt-image-1.5", n: int = 1, quality="auto", size="auto"):
@@ -65,7 +57,6 @@ class GPTImageGenerateNode:
                 "n": n,
                 "quality": quality,
                 "size": size,
-                "response_format": "b64_json"  # 必须指定以获取图片数据
             }
 
             payload = json.dumps(payload_data)

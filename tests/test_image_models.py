@@ -32,8 +32,6 @@ def png():
 
 
 def test_gpt_capabilities():
-    for model in options.GPT_25_MODELS:
-        options.validate_gpt_options(model, 10, 'max', '3840x2160')
     for model in options.GPT_MODELS[:3]:
         options.validate_gpt_options(model, 1, 'auto', 'auto')
         with pytest.raises(ValueError):
@@ -88,16 +86,12 @@ def test_gpt_wire_requests(monkeypatch, editing):
         payload = post.call_args.kwargs['data']
         payload = payload if editing else json.loads(payload)
         assert payload['model'] == model
-        assert ('response_format' in payload) == (not editing or model not in options.GPT_25_MODELS)
+        assert "response_format" not in payload
         assert result[0].shape == (1, 2, 2, 3)
     method('test', **args)
     payload = post.call_args.kwargs['data']
     payload = payload if editing else json.loads(payload)
     assert payload['model'] == 'gpt-image-1.5'
-    method('test', model='gpt-image-2.5-flare', quality='max', size='3840x2160', **args)
-    payload = post.call_args.kwargs['data']
-    payload = payload if editing else json.loads(payload)
-    assert payload['quality'] == 'max' and payload['size'] == '3840x2160'
     before = post.call_count
     with pytest.raises(ValueError):
         method('test', model='gpt-image-1', quality='max', **args)
@@ -123,6 +117,7 @@ def test_gemini_wire_and_legacy_defaults(monkeypatch, editing):
         assert method('test', **args, **kwargs)[0].shape == (1, 2, 2, 3)
         expected = model or options.GEMINI_MODELS[0]
         assert post.call_args.args[0] == f'https://example.com/v1beta/models/{expected}:generateContent'
+        assert post.call_args.kwargs['headers']['x-goog-api-key'] == 'test-token'
         assert post.call_args.kwargs['timeout'] == 180
     before = post.call_count
     with pytest.raises(ValueError):

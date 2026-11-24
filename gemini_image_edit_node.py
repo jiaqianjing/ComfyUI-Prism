@@ -1,12 +1,13 @@
-"""ComfyUI Gemini node: prompt/options -> IMAGE batch; calls Yunwu HTTP API."""
+"""ComfyUI Gemini node: prompt/options -> IMAGE batch; calls the official image API."""
 import torch
 import base64
 import numpy as np
 from PIL import Image
 from io import BytesIO
+import os
 import requests
 
-from .utils import load_config, init_logger
+from .utils import init_logger
 from .image_model_options import GEMINI_MODELS, validate_gemini_options
 from .image_response import decode_gemini_images
 
@@ -23,17 +24,10 @@ class GeminiImageEditNode:
 
     def __init__(self):
         self.logger = init_logger()
-        config = load_config()
-        # 优先读取 GEMINI_API
-        if config.has_section('GEMINI_API'):
-            api_section = config['GEMINI_API']
-        else:
-            api_section = {}
-
-        self.api_key = api_section.get('api_key')
-        self.api_url = api_section.get('api_url', 'https://yunwu.ai').rstrip('/')
+        self.api_key = os.getenv("GEMINI_API_KEY")
+        self.api_url = "https://generativelanguage.googleapis.com"
         if not self.api_key:
-            raise ValueError("API key not found in config.ini under [GEMINI_API] section")
+            raise ValueError("Set GEMINI_API_KEY before starting ComfyUI")
 
     # ---------- ComfyUI 接口定义 ----------
     @classmethod
@@ -52,7 +46,7 @@ class GeminiImageEditNode:
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "edit"
-    CATEGORY = "MidjourneyHub"
+    CATEGORY = "Prism"
 
     # ---------- 辅助函数 ----------
     @staticmethod
@@ -75,7 +69,7 @@ class GeminiImageEditNode:
         return base64_data
 
     # ---------- 主功能 ----------
-    def edit(self, prompt: str, image: torch.Tensor, aspect_ratio: str = "1:1", image_size: str = "1K", model: str = "gemini-3-pro-image-preview"):
+    def edit(self, prompt: str, image: torch.Tensor, aspect_ratio: str = "1:1", image_size: str = "1K", model: str = "gemini-3-pro-image"):
         """根据 prompt 和参考图片调用 API 生成编辑后的图片。"""
         validate_gemini_options(model, aspect_ratio, image_size)
         try:
@@ -114,7 +108,7 @@ class GeminiImageEditNode:
             }
 
             headers = {
-                'Authorization': f'Bearer {self.api_key}',
+                'x-goog-api-key': self.api_key,
                 'Content-Type': 'application/json'
             }
 

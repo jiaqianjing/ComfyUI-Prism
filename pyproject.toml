@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-midjourneyhub"
 version = "0.1.0"
-description = "A ComfyUI custom node for integrating with Midjourney API"
+description = "ComfyUI image generation and editing nodes for OpenAI and Google Gemini"
 authors = [
     {name = "Qianjing Jia", email = "jiaqianjing@gmail.com"}
 ]
@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/jiaqianjing/ComfyUI-MidjourneyHub"
+Repository = "https://github.com/jiaqianjing/ComfyUI-Prism"
 
 [build-system]
 requires = ["setuptools>=45", "wheel"]
@@ -35,5 +35,5 @@ multi_line_output = 3
 
 [tool.comfy]
 PublisherId = "jiaqianjing"
-DisplayName = "ComfyUI-MidjourneyHub"
+DisplayName = "ComfyUI Prism"
 Icon = ""

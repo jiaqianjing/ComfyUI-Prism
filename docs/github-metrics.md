@@ -4,7 +4,7 @@
 每天北京时间 09:17 采集，周一保存周报；GitHub 调度可能延迟。
 公开仓库的标准 GitHub 托管 runner 免费。
 
-查看报告：https://github.com/jiaqianjing/ComfyUI-MidjourneyHub/blob/metrics/latest.md
+查看报告：https://github.com/jiaqianjing/ComfyUI-Prism/blob/metrics/latest.md
 
 历史快照和周报保存在 metrics 分支，随公开仓库公开。
 Actions 每次运行 Summary 也有报告。手动 Run workflow 会立即采集并保存周报。

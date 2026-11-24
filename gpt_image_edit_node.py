@@ -1,12 +1,13 @@
-"""ComfyUI GPT image node: prompt/options -> IMAGE batch; calls Yunwu HTTP API."""
+"""ComfyUI GPT image node: prompt/options -> IMAGE batch; calls the official image API."""
 import torch
 import numpy as np
 from PIL import Image
 from io import BytesIO
+import os
 import requests
 
-from .utils import load_config, init_logger
-from .image_model_options import GPT_MODELS, GPT_QUALITIES, GPT_SIZES, GPT_25_MODELS, validate_gpt_options
+from .utils import init_logger
+from .image_model_options import GPT_MODELS, GPT_QUALITIES, GPT_SIZES, validate_gpt_options
 from .image_response import decode_gpt_images
 
 
@@ -24,18 +25,10 @@ class GPTImageEditNode:
 
     def __init__(self):
         self.logger = init_logger()
-        config = load_config()
-        # 优先读取 GPT_IMAGE_API
-        if config.has_section('GPT_IMAGE_API'):
-            api_section = config['GPT_IMAGE_API']
-        else:
-            api_section = {}
-
-        self.api_key = api_section.get('api_key')
-        base_url_root = api_section.get('api_url', 'https://yunwu.ai').rstrip('/')
-        self.base_url = f"{base_url_root}/v1"
+        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.base_url = "https://api.openai.com/v1"
         if not self.api_key:
-            raise ValueError("API key not found in config.ini under [GPT_IMAGE_API] section")
+            raise ValueError("Set OPENAI_API_KEY before starting ComfyUI")
 
     # ---------- ComfyUI 接口定义 ----------
     @classmethod
@@ -50,7 +43,7 @@ class GPTImageEditNode:
                 "image3": ("IMAGE",),
                 "image4": ("IMAGE",),
                 "mask": ("MASK",),
-                "model": (GPT_MODELS + ["dall-e-2"], {"default": "gpt-image-2-all"}),
+                "model": (GPT_MODELS, {"default": GPT_MODELS[0]}),
                 "n": ("INT", {"default": 1, "min": 1, "max": 10, "step": 1}),
                 "quality": (GPT_QUALITIES, {"default": "auto"}),
                 "size": (GPT_SIZES, {"default": "auto"}),
@@ -59,7 +52,7 @@ class GPTImageEditNode:
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "edit"
-    CATEGORY = "MidjourneyHub"
+    CATEGORY = "Prism"
 
     # ---------- 辅助函数 ----------
     @staticmethod
@@ -124,7 +117,7 @@ class GPTImageEditNode:
             for idx, img in enumerate(images):
                 # 默认使用 PNG，如果 API 有特殊要求可以调整
                 file_obj = self._tensor_to_bytesio(img, format="PNG")
-                files.append(('image', (f'image{idx}.png', file_obj, 'image/png')))
+                files.append(('image[]', (f'image{idx}.png', file_obj, 'image/png')))
 
             if mask is not None:
                 mask_obj = self._mask_tensor_to_bytesio(mask)
@@ -138,11 +131,8 @@ class GPTImageEditNode:
                 "n": n,
                 "quality": quality,
                 "size": size,
-                "response_format": "b64_json"  # 强制返回 base64
             }
 
-            if model in GPT_25_MODELS:
-                payload.pop("response_format")  # Not documented for 2.5 edits.
 
             headers = {
                 'Accept': 'application/json',

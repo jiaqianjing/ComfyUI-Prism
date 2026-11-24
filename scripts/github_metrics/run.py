@@ -22,7 +22,7 @@ def main():
                         default=Path(__file__).resolve().parents[2] / "metrics")
     args = parser.parse_args()
     now = datetime.now(timezone.utc)
-    snapshot = collect("jiaqianjing/ComfyUI-MidjourneyHub", now)
+    snapshot = collect("jiaqianjing/ComfyUI-Prism", now)
     root = args.output
     save_json(root / "snapshots" / (now.strftime("%Y-%m-%dT%H%M%S%fZ") + ".json"), snapshot)
     snapshots = read_snapshots(root)
