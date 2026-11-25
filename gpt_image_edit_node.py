@@ -7,12 +7,14 @@ import os
 import requests
 
 from .utils import init_logger
-from .image_model_options import GPT_MODELS, GPT_QUALITIES, GPT_SIZES, validate_gpt_options
+from .image_model_options import (
+    GPT_DEFAULT_MODEL, GPT_MODELS, GPT_QUALITIES, GPT_SIZES, validate_gpt_options,
+)
 from .image_response import decode_gpt_images
 
 
 class GPTImageEditNode:
-    """ComfyUI 自定义节点：使用 GPT-Image-1 模型编辑/合成图片。
+    """ComfyUI 自定义节点：使用 OpenAI 图像模型编辑/合成图片。
 
     输入：
         prompt (STRING): 文本提示词。
@@ -43,7 +45,7 @@ class GPTImageEditNode:
                 "image3": ("IMAGE",),
                 "image4": ("IMAGE",),
                 "mask": ("MASK",),
-                "model": (GPT_MODELS, {"default": GPT_MODELS[0]}),
+                "model": (GPT_MODELS, {"default": GPT_DEFAULT_MODEL}),
                 "n": ("INT", {"default": 1, "min": 1, "max": 10, "step": 1}),
                 "quality": (GPT_QUALITIES, {"default": "auto"}),
                 "size": (GPT_SIZES, {"default": "auto"}),
@@ -98,7 +100,7 @@ class GPTImageEditNode:
     # ---------- 主功能 ----------
     def edit(self, prompt: str, image1: torch.Tensor, image2: torch.Tensor = None, 
              image3: torch.Tensor = None, image4: torch.Tensor = None, mask: torch.Tensor = None,
-             model: str = "gpt-image-1.5", n: int = 1,
+             model: str = GPT_DEFAULT_MODEL, n: int = 1,
              quality: str = "auto", size: str = "auto"):
         """根据 prompt 和参考图片调用 API 生成新图片。"""
         validate_gpt_options(model, n, quality, size, editing=True)

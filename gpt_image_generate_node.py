@@ -4,12 +4,14 @@ import requests
 import json
 
 from .utils import init_logger
-from .image_model_options import GPT_MODELS, GPT_QUALITIES, GPT_SIZES, validate_gpt_options
+from .image_model_options import (
+    GPT_DEFAULT_MODEL, GPT_MODELS, GPT_QUALITIES, GPT_SIZES, validate_gpt_options,
+)
 from .image_response import decode_gpt_images
 
 
 class GPTImageGenerateNode:
-    """ComfyUI 自定义节点：使用 GPT-Image-1 模型生成图片。
+    """ComfyUI 自定义节点：使用 OpenAI 图像模型生成图片。
 
     输入：
         prompt (STRING): 文本提示词，支持多行。
@@ -32,7 +34,7 @@ class GPTImageGenerateNode:
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
-                "model": (GPT_MODELS, {"default": GPT_MODELS[0]}),
+                "model": (GPT_MODELS, {"default": GPT_DEFAULT_MODEL}),
                 "n": ("INT", {"default": 1, "min": 1, "max": 10, "step": 1}),
                 "quality": (GPT_QUALITIES, {"default": "auto"}),
                 "size": (GPT_SIZES, {"default": "auto"}),
@@ -44,8 +46,8 @@ class GPTImageGenerateNode:
     CATEGORY = "Prism"
 
     # ---------- 主功能 ----------
-    def generate(self, prompt: str, model="gpt-image-1.5", n: int = 1, quality="auto", size="auto"):
-        """根据 prompt 调用 GPT-Image-1 生成图片。"""
+    def generate(self, prompt: str, model=GPT_DEFAULT_MODEL, n: int = 1, quality="auto", size="auto"):
+        """根据 prompt 调用 OpenAI 图像 API 生成图片。"""
         validate_gpt_options(model, n, quality, size, editing=False)
         try:
             url = f"{self.base_url}/images/generations"

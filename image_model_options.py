@@ -1,5 +1,6 @@
 """Supported official image models and node options."""
-GPT_MODELS = ['gpt-image-1.5', 'gpt-image-1']
+GPT_DEFAULT_MODEL = 'gpt-image-2.6-flare'
+GPT_MODELS = [GPT_DEFAULT_MODEL]
 GPT_QUALITIES = ['auto', 'high', 'medium', 'low']
 GPT_SIZES = ['auto', '1024x1024', '1536x1024', '1024x1536']
 GEMINI_MODELS = ['gemini-3-pro-image', 'gemini-3.1-flash-lite-image']
