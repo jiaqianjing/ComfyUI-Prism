@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "repository": "jiaqianjing/ComfyUI-Prism",
+  "collected_at": "2026-11-25T09:49:28.708706+00:00",
+  "counts": {
+    "stars": 21,
+    "forks": 2,
+    "subscribers": 1
+  },
+  "traffic": {
+    "views": {
+      "count": 25,
+      "uniques": 9,
+      "views": [
+        {
+          "timestamp": "2026-11-11T00:00:00Z",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "timestamp": "2026-11-12T00:00:00Z",
+          "count": 0,
+          "uniques": 0
+        },
+        {
+          "timestamp": "2026-11-13T00:00:00Z",
+          "count": 6,
+          "uniques": 1
+        },
+        {
+          "timestamp": "2026-11-14T00:00:00Z",
+          "count": 0,
+          "uniques": 0
+        },
+        {
+          "timestamp": "2026-11-15T00:00:00Z",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "timestamp": "2026-11-16T00:00:00Z",
+          "count": 0,
+          "uniques": 0
+        },
+        {
+          "timestamp": "2026-11-17T00:00:00Z",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "timestamp": "2026-11-18T00:00:00Z",
+          "count": 2,
+          "uniques": 2
+        },
+        {
+          "timestamp": "2026-11-19T00:00:00Z",
+          "count": 2,
+          "uniques": 1
+        },
+        {
+          "timestamp": "2026-11-20T00:00:00Z",
+          "count": 0,
+          "uniques": 0
+        },
+        {
+          "timestamp": "2026-11-21T00:00:00Z",
+          "count": 0,
+          "uniques": 0
+        },
+        {
+          "timestamp": "2026-11-22T00:00:00Z",
+          "count": 1,
+          "uniques": 1
+        },
+        {
+          "timestamp": "2026-11-23T00:00:00Z",
+          "count": 0,
+          "uniques": 0
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00Z",
+          "count": 9,
+          "uniques": 1
+        }
+      ]
+    },
+    "clones": {
+      "count": 199,
+      "uniques": 128,
+      "clones": [
+        {
+          "timestamp": "2026-11-11T00:00:00Z",
+          "count": 8,
+          "uniques": 6
+        },
+        {
+          "timestamp": "2026-11-12T00:00:00Z",
+          "count": 14,
+          "uniques": 10
+        },
+        {
+          "timestamp": "2026-11-13T00:00:00Z",
+          "count": 5,
+          "uniques": 4
+        },
+        {
+          "timestamp": "2026-11-14T00:00:00Z",
+          "count": 3,
+          "uniques": 3
+        },
+        {
+          "timestamp": "2026-11-15T00:00:00Z",
+          "count": 13,
+          "uniques": 9
+        },
+        {
+          "timestamp": "2026-11-16T00:00:00Z",
+          "count": 3,
+          "uniques": 3
+        },
+        {
+          "timestamp": "2026-11-17T00:00:00Z",
+          "count": 14,
+          "uniques": 11
+        },
+        {
+          "timestamp": "2026-11-18T00:00:00Z",
+          "count": 14,
+          "uniques": 9
+        },
+        {
+          "timestamp": "2026-11-19T00:00:00Z",
+          "count": 20,
+          "uniques": 14
+        },
+        {
+          "timestamp": "2026-11-20T00:00:00Z",
+          "count": 4,
+          "uniques": 4
+        },
+        {
+          "timestamp": "2026-11-21T00:00:00Z",
+          "count": 9,
+          "uniques": 8
+        },
+        {
+          "timestamp": "2026-11-22T00:00:00Z",
+          "count": 23,
+          "uniques": 18
+        },
+        {
+          "timestamp": "2026-11-23T00:00:00Z",
+          "count": 25,
+          "uniques": 20
+        },
+        {
+          "timestamp": "2026-11-24T00:00:00Z",
+          "count": 44,
+          "uniques": 31
+        }
+      ]
+    },
+    "popular/referrers": [
+      {
+        "referrer": "github.com",
+        "count": 8,
+        "uniques": 2
+      },
+      {
+        "referrer": "Google",
+        "count": 1,
+        "uniques": 1
+      }
+    ],
+    "popular/paths": [
+      {
+        "path": "/jiaqianjing/ComfyUI-MidjourneyHub",
+        "title": "Overview",
+        "count": 9,
+        "uniques": 7
+      },
+      {
+        "path": "/jiaqianjing/ComfyUI-Prism",
+        "title": "Overview",
+        "count": 4,
+        "uniques": 1
+      },
+      {
+        "path": "/jiaqianjing/ComfyUI-MidjourneyHub/branches",
+        "title": "/branches",
+        "count": 2,
+        "uniques": 1
+      },
+      {
+        "path": "/jiaqianjing/ComfyUI-MidjourneyHub/tree/metrics",
+        "title": "/tree/metrics",
+        "count": 2,
+        "uniques": 1
+      },
+      {
+        "path": "/jiaqianjing/ComfyUI-MidjourneyHub/blob/main/README.md",
+        "title": "/blob/main/README.md",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/jiaqianjing/ComfyUI-MidjourneyHub/commits",
+        "title": "/commits",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/jiaqianjing/ComfyUI-MidjourneyHub/commits/metrics",
+        "title": "/commits/metrics",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/jiaqianjing/ComfyUI-MidjourneyHub/issues",
+        "title": "/issues",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/jiaqianjing/ComfyUI-MidjourneyHub/issues/6",
+        "title": "/issues/6",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "path": "/jiaqianjing/ComfyUI-MidjourneyHub/issues/new",
+        "title": "/issues/new",
+        "count": 1,
+        "uniques": 1
+      }
+    ]
+  }
+}
