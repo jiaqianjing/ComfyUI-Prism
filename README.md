@@ -52,9 +52,19 @@ $env:GEMINI_API_KEY = "替换为你的 Gemini 密钥"
 
 ## 实际工作流
 
-下面是 ComfyUI 中的实测截图。左侧用 `GPT Image Generate` 生成一只蓝色茶壶，右侧将生成图直接传给 `GPT Image Edit`，只修改釉色。两张预览分别是生成结果和编辑结果，模型均为 `gpt-image-2.6-flare`，尺寸为 1024×1024。
+以下两组均为 ComfyUI 实测，使用同样的生成和编辑提示词。
+
+### OpenAI GPT Image 2.6 Flare
+
+左侧用 `GPT Image Generate` 生成一只蓝色茶壶，右侧将生成图直接传给 `GPT Image Edit`，只修改釉色。两张预览分别是生成结果和编辑结果，模型均为 `gpt-image-2.6-flare`，尺寸为 1024×1024。
 
 ![Prism 在 ComfyUI 中的实测工作流：生成蓝色茶壶，再将釉色编辑为橙色](example/prism-openai-live.webp)
+
+### Google Nano Banana 2.1
+
+左侧用 `Nano Banana Generate` 生成蓝色茶壶，右侧用 `Nano Banana Edit` 将同一张图的釉色改为橙色。两步均使用 `gemini-nano-banana-2.1`、1:1、1K 设置。
+
+![Nano Banana 2.1 在 Prism 中的实测工作流：生成蓝色茶壶，再将釉色编辑为橙色](example/prism-gemini-live.webp)
 
 ## 模型与输出选项
 
