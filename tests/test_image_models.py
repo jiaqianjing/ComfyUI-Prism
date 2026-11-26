@@ -17,12 +17,31 @@ PACKAGE = 'model_test_plugin'
 package = types.ModuleType(PACKAGE)
 package.__path__ = [str(Path(__file__).resolve().parents[1])]
 sys.modules[PACKAGE] = package
-utils = types.ModuleType(f'{PACKAGE}.utils')
-utils.load_config = lambda: None
-utils.init_logger = Mock
-sys.modules[utils.__name__] = utils
 options = importlib.import_module(f'{PACKAGE}.image_model_options')
 responses = importlib.import_module(f'{PACKAGE}.image_response')
+
+
+def test_comfy_registration_stays_compatible(monkeypatch):
+    from logging import getLogger
+
+    plugin = importlib.import_module(f'{PACKAGE}.__init__')
+    expected = {
+        'GPTImageGenerateNode': 'GPT Image Generate',
+        'GPTImageEditNode': 'GPT Image Edit',
+        'GeminiImageGenerateNode': 'Nano Banana Generate',
+        'GeminiImageEditNode': 'Nano Banana Edit',
+    }
+    assert plugin.NODE_DISPLAY_NAME_MAPPINGS == expected
+    assert set(plugin.NODE_CLASS_MAPPINGS) == set(expected)
+    monkeypatch.setenv('OPENAI_API_KEY', 'test-token')
+    monkeypatch.setenv('GEMINI_API_KEY', 'test-token')
+    root = getLogger()
+    previous = (root.level, tuple(root.handlers))
+    for node_id, cls in plugin.NODE_CLASS_MAPPINGS.items():
+        assert cls.__name__ == node_id and cls.CATEGORY == 'Prism'
+        cls()
+        cls()
+    assert (root.level, tuple(root.handlers)) == previous
 
 
 def png():

@@ -14,7 +14,7 @@ GEMINI_SIZES = {
 ASPECT_RATIOS = ['1:1', '9:16', '16:9', '4:3', '3:4']
 
 
-def validate_gpt_options(model, n, quality, size, *, editing=False):
+def validate_gpt_options(model, n, quality, size):
     """Validate options before network I/O."""
     if model not in GPT_MODELS:
         raise ValueError(f'Unknown GPT image model: {model}')

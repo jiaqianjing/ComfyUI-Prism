@@ -1,7 +1,6 @@
 """ComfyUI Gemini node: prompt/options -> IMAGE batch; calls the official image API."""
 import os
 
-from .utils import init_logger
 from .image_model_options import (
     ASPECT_RATIOS, GEMINI_IMAGE_SIZES, GEMINI_MODELS, NANO_BANANA_2_1,
 )
@@ -17,7 +16,6 @@ class GeminiImageGenerateNode:
     """
 
     def __init__(self):
-        self.logger = init_logger()
         self.api_key = os.getenv("GEMINI_API_KEY")
         self.api_url = "https://generativelanguage.googleapis.com"
         if not self.api_key:
@@ -43,11 +41,7 @@ class GeminiImageGenerateNode:
 
     # ---------- 主功能 ----------
     def generate(self, prompt: str, aspect_ratio: str = "1:1", image_size: str = "1K", model: str = NANO_BANANA_2_1):
-        """根据 prompt 调用 Gemini 3 Pro Image Preview 生成图片。"""
-        try:
-            return (request_nano_banana_image(
-                self.api_url, self.api_key, prompt, model, aspect_ratio, image_size
-            ),)
-        except Exception as e:
-            self.logger.error(f"Error in GeminiImageGenerateNode: {e}")
-            raise
+        """根据 prompt 调用选定的 Nano Banana 模型生成图片。"""
+        return (request_nano_banana_image(
+            self.api_url, self.api_key, prompt, model, aspect_ratio, image_size
+        ),)

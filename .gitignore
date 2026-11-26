@@ -1,4 +1,7 @@
+# Keep local credentials and logs from older releases out of Git.
 config.ini
+/.env.prism.local
+/logs/
 /metrics/
 # Byte-compiled / optimized / DLL files
 __pycache__/

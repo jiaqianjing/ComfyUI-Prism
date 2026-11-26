@@ -6,7 +6,6 @@ from PIL import Image
 from io import BytesIO
 import os
 
-from .utils import init_logger
 from .image_model_options import (
     ASPECT_RATIOS, GEMINI_IMAGE_SIZES, GEMINI_MODELS, NANO_BANANA_2_1, validate_gemini_options,
 )
@@ -24,7 +23,6 @@ class GeminiImageEditNode:
     """
 
     def __init__(self):
-        self.logger = init_logger()
         self.api_key = os.getenv("GEMINI_API_KEY")
         self.api_url = "https://generativelanguage.googleapis.com"
         if not self.api_key:
@@ -55,29 +53,25 @@ class GeminiImageEditNode:
         """将 ComfyUI 的图像 Tensor 转换为 base64 编码的字符串。"""
         if tensor.ndim == 4:
             tensor = tensor[0]
-        
+
         img_np = (tensor.cpu().numpy() * 255.0).clip(0, 255).astype(np.uint8)
         img_pil = Image.fromarray(img_np)
-        
+
         buffer = BytesIO()
         img_pil.save(buffer, format="JPEG", quality=95)
         buffer.seek(0)
-        
+
         # 转换为 base64
         image_bytes = buffer.read()
         base64_data = base64.b64encode(image_bytes).decode('utf-8')
-        
+
         return base64_data
 
     # ---------- 主功能 ----------
     def edit(self, prompt: str, image: torch.Tensor, aspect_ratio: str = "1:1", image_size: str = "1K", model: str = NANO_BANANA_2_1):
         """根据 prompt 和参考图片调用 API 生成编辑后的图片。"""
         validate_gemini_options(model, aspect_ratio, image_size)
-        try:
-            image_base64 = self._tensor_to_base64(image)
-            return (request_nano_banana_image(
-                self.api_url, self.api_key, prompt, model, aspect_ratio, image_size, image_base64=image_base64
-            ),)
-        except Exception as e:
-            self.logger.error(f"Error in GeminiImageEditNode: {e}")
-            raise
+        image_base64 = self._tensor_to_base64(image)
+        return (request_nano_banana_image(
+            self.api_url, self.api_key, prompt, model, aspect_ratio, image_size, image_base64=image_base64
+        ),)

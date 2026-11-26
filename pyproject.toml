@@ -22,7 +22,9 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
+# Keep the established distribution ID while packaging the root node modules.
 packages = ["comfyui_midjourneyhub"]
+package-dir = { comfyui_midjourneyhub = "." }
 
 [tool.black]
 line-length = 88

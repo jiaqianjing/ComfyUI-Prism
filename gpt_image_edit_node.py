@@ -6,7 +6,6 @@ from io import BytesIO
 import os
 import requests
 
-from .utils import init_logger
 from .image_model_options import (
     GPT_DEFAULT_MODEL, GPT_MODELS, GPT_QUALITIES, GPT_SIZES, validate_gpt_options,
 )
@@ -26,7 +25,6 @@ class GPTImageEditNode:
     """
 
     def __init__(self):
-        self.logger = init_logger()
         self.api_key = os.getenv("OPENAI_API_KEY")
         self.base_url = "https://api.openai.com/v1"
         if not self.api_key:
@@ -62,10 +60,10 @@ class GPTImageEditNode:
         """将 ComfyUI 的图像 Tensor 转换为指定格式的 BytesIO 对象。"""
         if tensor.ndim == 4:
             tensor = tensor[0]
-        
+
         img_np = (tensor.cpu().numpy() * 255.0).clip(0, 255).astype(np.uint8)
         img_pil = Image.fromarray(img_np)
-        
+
         buffer = BytesIO()
         img_pil.save(buffer, format=format)
         buffer.seek(0)
@@ -88,7 +86,7 @@ class GPTImageEditNode:
 
         # 创建一个带有此 alpha 通道的 RGBA 图像
         pil_image = Image.fromarray(alpha_channel, mode='L').convert('RGBA')
-        
+
         # 将原始的 alpha 通道数据放入
         pil_image.putalpha(Image.fromarray(alpha_channel, mode='L'))
 
@@ -98,56 +96,49 @@ class GPTImageEditNode:
         return buffer
 
     # ---------- 主功能 ----------
-    def edit(self, prompt: str, image1: torch.Tensor, image2: torch.Tensor = None, 
+    def edit(self, prompt: str, image1: torch.Tensor, image2: torch.Tensor = None,
              image3: torch.Tensor = None, image4: torch.Tensor = None, mask: torch.Tensor = None,
              model: str = GPT_DEFAULT_MODEL, n: int = 1,
              quality: str = "auto", size: str = "auto"):
         """根据 prompt 和参考图片调用 API 生成新图片。"""
-        validate_gpt_options(model, n, quality, size, editing=True)
-        try:
-            url = f"{self.base_url}/images/edits"
+        validate_gpt_options(model, n, quality, size)
+        url = f"{self.base_url}/images/edits"
 
-            # 收集所有有效的图像输入
-            images = [img for img in [image1, image2, image3, image4] if img is not None]
-            if not images:
-                raise ValueError("At least one image must be provided.")
+        # 收集所有有效的图像输入
+        images = [img for img in [image1, image2, image3, image4] if img is not None]
+        if not images:
+            raise ValueError("At least one image must be provided.")
 
-            # 构建 multipart/form-data 的 files 参数
-            # 注意：test_api 示例中使用了多个 'image' 键，requests 的 files 参数支持 list of tuples
-            # 格式: ('field_name', ('filename', file_object, 'content_type'))
-            files = []
-            for idx, img in enumerate(images):
-                # 默认使用 PNG，如果 API 有特殊要求可以调整
-                file_obj = self._tensor_to_bytesio(img, format="PNG")
-                files.append(('image[]', (f'image{idx}.png', file_obj, 'image/png')))
+        # 构建 multipart/form-data 的 files 参数
+        # 格式: ('field_name', ('filename', file_object, 'content_type'))
+        files = []
+        for idx, img in enumerate(images):
+            # 默认使用 PNG，如果 API 有特殊要求可以调整
+            file_obj = self._tensor_to_bytesio(img, format="PNG")
+            files.append(('image[]', (f'image{idx}.png', file_obj, 'image/png')))
 
-            if mask is not None:
-                mask_obj = self._mask_tensor_to_bytesio(mask)
-                files.append(('mask', ('mask.png', mask_obj, 'image/png')))
+        if mask is not None:
+            mask_obj = self._mask_tensor_to_bytesio(mask)
+            files.append(('mask', ('mask.png', mask_obj, 'image/png')))
 
-            # 构建其他参数 payload (仅使用 API 支持的参数)
-            # requests 的 files 和 data 配合使用时，data 中的字段会作为 form fields 发送
-            payload = {
-                "prompt": prompt,
-                "model": model,
-                "n": n,
-                "quality": quality,
-                "size": size,
-            }
+        # 构建其他参数 payload (仅使用 API 支持的参数)
+        # requests 的 files 和 data 配合使用时，data 中的字段会作为 form fields 发送
+        payload = {
+            "prompt": prompt,
+            "model": model,
+            "n": n,
+            "quality": quality,
+            "size": size,
+        }
 
 
-            headers = {
-                'Accept': 'application/json',
-                'Authorization': f'Bearer {self.api_key}'
-                # 'Content-Type': 'multipart/form-data' # requests 会自动添加 boundary，不要手动添加 Content-Type
-            }
+        headers = {
+            'Accept': 'application/json',
+            'Authorization': f'Bearer {self.api_key}'
+        }
 
-            # 发送请求 (120秒超时，图像生成较慢)
-            response = requests.post(url, headers=headers, data=payload, files=files, timeout=120)
-            response.raise_for_status()
+        # 发送请求 (120秒超时，图像生成较慢)
+        response = requests.post(url, headers=headers, data=payload, files=files, timeout=120)
+        response.raise_for_status()
 
-            return (decode_gpt_images(response.json()),)
-        except Exception as e:
-            self.logger.error(f"Error in GPTImageEditNode: {str(e)}")
-            raise
- 
+        return (decode_gpt_images(response.json()),)
