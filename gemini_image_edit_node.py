@@ -23,7 +23,6 @@ class GeminiImageEditNode:
     """
 
     def __init__(self):
-        self.api_key = get_api_key("GEMINI_API_KEY")
         self.api_url = "https://generativelanguage.googleapis.com"
 
     # ---------- ComfyUI 接口定义 ----------
@@ -71,5 +70,5 @@ class GeminiImageEditNode:
         validate_gemini_options(model, aspect_ratio, image_size)
         image_base64 = self._tensor_to_base64(image)
         return (request_nano_banana_image(
-            self.api_url, self.api_key, prompt, model, aspect_ratio, image_size, image_base64=image_base64
+            self.api_url, get_api_key("GEMINI_API_KEY"), prompt, model, aspect_ratio, image_size, image_base64=image_base64
         ),)

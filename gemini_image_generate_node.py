@@ -16,7 +16,6 @@ class GeminiImageGenerateNode:
     """
 
     def __init__(self):
-        self.api_key = get_api_key("GEMINI_API_KEY")
         self.api_url = "https://generativelanguage.googleapis.com"
 
     # ---------- ComfyUI 接口定义 ----------
@@ -41,5 +40,5 @@ class GeminiImageGenerateNode:
     def generate(self, prompt: str, aspect_ratio: str = "1:1", image_size: str = "1K", model: str = NANO_BANANA_2_1):
         """根据 prompt 调用选定的 Nano Banana 模型生成图片。"""
         return (request_nano_banana_image(
-            self.api_url, self.api_key, prompt, model, aspect_ratio, image_size
+            self.api_url, get_api_key("GEMINI_API_KEY"), prompt, model, aspect_ratio, image_size
         ),)
