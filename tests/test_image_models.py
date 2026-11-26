@@ -44,10 +44,11 @@ def test_gpt_capabilities():
 
 
 def test_gemini_capabilities():
-    options.validate_gemini_options(options.GEMINI_MODELS[0], '16:9', '2K')
-    options.validate_gemini_options(options.GEMINI_MODELS[1], '16:9', '1K')
+    options.validate_gemini_options('gemini-nano-banana-2.1', '16:9', '4K')
+    options.validate_gemini_options('gemini-3-pro-image', '16:9', '2K')
+    options.validate_gemini_options('gemini-3.1-flash-lite-image', '16:9', '1K')
     with pytest.raises(ValueError, match='only 1K'):
-        options.validate_gemini_options(options.GEMINI_MODELS[1], '16:9', '2K')
+        options.validate_gemini_options('gemini-3.1-flash-lite-image', '16:9', '2K')
 
 
 def test_response_formats(monkeypatch):
@@ -125,30 +126,77 @@ def test_gpt_wire_requests(monkeypatch, editing):
 
 
 @pytest.mark.parametrize('editing', [False, True])
-def test_gemini_wire_and_legacy_defaults(monkeypatch, editing):
+def test_nano_banana_and_legacy_wire_requests(monkeypatch, editing):
     module = importlib.import_module(f'{PACKAGE}.gemini_image_{"edit" if editing else "generate"}_node')
+    client = importlib.import_module(f'{PACKAGE}.nano_banana_client')
     cls = module.GeminiImageEditNode if editing else module.GeminiImageGenerateNode
-    node = cls.__new__(cls)
-    node.logger, node.api_key, node.api_url = Mock(), 'test-token', 'https://example.com'
+    monkeypatch.setenv('GEMINI_API_KEY', 'test-token')
+    node = cls()
+    expected_model = 'gemini-nano-banana-2.1'
+    choices, widget = cls.INPUT_TYPES()['optional']['model']
+    assert choices == [expected_model, 'gemini-3-pro-image', 'gemini-3.1-flash-lite-image']
+    assert widget['default'] == expected_model
+    assert cls.INPUT_TYPES()['optional']['image_size'][0] == ['1K', '2K', '4K']
+    image_data = base64.b64encode(png()).decode()
     response = Mock()
-    response.json.return_value = {'candidates': [{'content': {'parts': [
-        {'inlineData': {'data': base64.b64encode(png()).decode()}}
-    ]}}]}
     post = Mock(return_value=response)
-    monkeypatch.setattr(module.requests, 'post', post)
-    method = node.edit if editing else node.generate
+    monkeypatch.setattr(client.requests, 'post', post)
+    method = getattr(node, cls.FUNCTION)
     args = {'image': torch.zeros(1, 2, 2, 3)} if editing else {}
-    for model in [None, options.GEMINI_MODELS[1]]:
-        kwargs = {} if model is None else {'model': model}
-        assert method('test', **args, **kwargs)[0].shape == (1, 2, 2, 3)
-        expected = model or options.GEMINI_MODELS[0]
-        assert post.call_args.args[0] == f'https://example.com/v1beta/models/{expected}:generateContent'
-        assert post.call_args.kwargs['headers']['x-goog-api-key'] == 'test-token'
-        assert post.call_args.kwargs['timeout'] == 180
+
+    for optional_model in ({}, {'model': expected_model}):
+        response.json.return_value = {
+            'status': 'completed',
+            'steps': [
+                {'type': 'thought', 'content': [{'type': 'image', 'data': 'not-output'}]},
+                {'type': 'model_output', 'content': [
+                    {'type': 'text', 'text': 'Ignored'},
+                    {'type': 'image', 'mime_type': 'image/png', 'data': image_data},
+                ]},
+            ],
+        }
+        assert method('test', aspect_ratio='16:9', image_size='4K', **args, **optional_model)[0].shape == (1, 2, 2, 3)
+        assert post.call_args.args == ('https://generativelanguage.googleapis.com/v1beta/interactions',)
+        request = post.call_args.kwargs
+        assert request['headers']['Api-Revision'] == '2026-05-20'
+        assert request['headers']['x-goog-api-key'] == 'test-token'
+        payload = request['json']
+        assert payload['model'] == expected_model
+        assert payload['store'] is False
+        assert payload['response_format'] == {'type': 'image', 'aspect_ratio': '16:9', 'image_size': '4K'}
+        assert payload['input'][0] == {'type': 'text', 'text': 'test'}
+        assert len(payload['input']) == (2 if editing else 1)
+        if editing:
+            part = payload['input'][1]
+            assert (part['type'], part['mime_type']) == ('image', 'image/jpeg')
+            with Image.open(BytesIO(base64.b64decode(part['data']))) as reference:
+                assert reference.format == 'JPEG' and reference.size == (2, 2)
+
+    response.json.return_value = {'candidates': [{'content': {'parts': [
+        {'inlineData': {'data': image_data}}
+    ]}}]}
+    for legacy in choices[1:]:
+        assert method('test', model=legacy, **args)[0].shape == (1, 2, 2, 3)
+        assert post.call_args.args == (f'https://generativelanguage.googleapis.com/v1beta/models/{legacy}:generateContent',)
+        request = post.call_args.kwargs
+        assert 'Api-Revision' not in request['headers']
+        assert request['headers']['x-goog-api-key'] == 'test-token'
+        assert request['timeout'] == 180
+        parts = request['json']['contents'][0]['parts']
+        assert parts[0] == {'text': 'test'}
+        if editing:
+            assert parts[1]['inline_data']['mime_type'] == 'image/jpeg'
     before = post.call_count
-    with pytest.raises(ValueError):
-        method('test', model=options.GEMINI_MODELS[1], image_size='2K', **args)
+    with pytest.raises(ValueError, match='only 1K'):
+        method('test', model='gemini-3.1-flash-lite-image', image_size='4K', **args)
     assert post.call_count == before
+
+
+def test_nano_banana_rejects_incomplete_or_missing_image():
+    with pytest.raises(RuntimeError, match='did not complete'):
+        responses.decode_nano_banana_interaction({'status': 'incomplete'})
+    with pytest.raises(RuntimeError, match='No image data'):
+        responses.decode_nano_banana_interaction({'status': 'completed', 'steps': []})
 
 
 @pytest.mark.parametrize('key', ['inlineData', 'inline_data'])

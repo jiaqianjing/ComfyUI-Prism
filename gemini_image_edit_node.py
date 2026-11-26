@@ -5,15 +5,16 @@ import numpy as np
 from PIL import Image
 from io import BytesIO
 import os
-import requests
 
 from .utils import init_logger
-from .image_model_options import GEMINI_MODELS, validate_gemini_options
-from .image_response import decode_gemini_images
+from .image_model_options import (
+    ASPECT_RATIOS, GEMINI_IMAGE_SIZES, GEMINI_MODELS, NANO_BANANA_2_1, validate_gemini_options,
+)
+from .nano_banana_client import request_nano_banana_image
 
 
 class GeminiImageEditNode:
-    """ComfyUI 自定义节点：使用 Gemini 3 Pro Image Preview 模型编辑图片。
+    """ComfyUI 自定义节点：使用 Google Nano Banana 模型编辑图片。
 
     输入：
         prompt (STRING): 文本提示词，描述要进行的编辑操作。
@@ -38,9 +39,9 @@ class GeminiImageEditNode:
                 "image": ("IMAGE",),
             },
             "optional": {
-                "aspect_ratio": (["1:1", "9:16", "16:9", "4:3", "3:4"], {"default": "1:1"}),
-                "image_size": (["1K", "2K"], {"default": "1K"}),
-                "model": (GEMINI_MODELS, {"default": GEMINI_MODELS[0]}),
+                "aspect_ratio": (ASPECT_RATIOS, {"default": "1:1"}),
+                "image_size": (GEMINI_IMAGE_SIZES, {"default": "1K"}),
+                "model": (GEMINI_MODELS, {"default": NANO_BANANA_2_1}),
             }
         }
 
@@ -69,54 +70,14 @@ class GeminiImageEditNode:
         return base64_data
 
     # ---------- 主功能 ----------
-    def edit(self, prompt: str, image: torch.Tensor, aspect_ratio: str = "1:1", image_size: str = "1K", model: str = "gemini-3-pro-image"):
+    def edit(self, prompt: str, image: torch.Tensor, aspect_ratio: str = "1:1", image_size: str = "1K", model: str = NANO_BANANA_2_1):
         """根据 prompt 和参考图片调用 API 生成编辑后的图片。"""
         validate_gemini_options(model, aspect_ratio, image_size)
         try:
-            # 将图片转换为 base64
             image_base64 = self._tensor_to_base64(image)
-            
-            # 构建请求 URL
-            url = f"{self.api_url}/v1beta/models/{model}:generateContent"
-            
-            # 构建请求体
-            # 注意: test_api 示例显示使用 inline_data (snake_case) 而不是 inlineData (camelCase)
-            payload = {
-                "contents": [
-                    {
-                        "role": "user",
-                        "parts": [
-                            {
-                                "text": prompt
-                            },
-                            {
-                                "inline_data": {
-                                    "mime_type": "image/jpeg",
-                                    "data": image_base64
-                                }
-                            }
-                        ]
-                    }
-                ],
-                "generationConfig": {
-                    "responseModalities": ["TEXT", "IMAGE"],
-                    "imageConfig": {
-                        "aspectRatio": aspect_ratio,
-                        "imageSize": image_size
-                    }
-                }
-            }
-
-            headers = {
-                'x-goog-api-key': self.api_key,
-                'Content-Type': 'application/json'
-            }
-
-            # 使用 requests 发送同步请求
-            response = requests.post(url, headers=headers, json=payload, timeout=180)
-            response.raise_for_status()
-            return (decode_gemini_images(response.json()),)
-
+            return (request_nano_banana_image(
+                self.api_url, self.api_key, prompt, model, aspect_ratio, image_size, image_base64=image_base64
+            ),)
         except Exception as e:
-            self.logger.error(f"Error in GeminiImageEditNode: {str(e)}")
+            self.logger.error(f"Error in GeminiImageEditNode: {e}")
             raise

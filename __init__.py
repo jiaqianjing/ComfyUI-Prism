@@ -13,8 +13,8 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "GPTImageGenerateNode": "GPT Image Generate",
     "GPTImageEditNode": "GPT Image Edit",
-    "GeminiImageGenerateNode": "Gemini Image Generate",
-    "GeminiImageEditNode": "Gemini Image Edit"
+    "GeminiImageGenerateNode": "Nano Banana Generate",
+    "GeminiImageEditNode": "Nano Banana Edit"
 }
 
 __all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]

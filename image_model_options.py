@@ -3,9 +3,14 @@ GPT_DEFAULT_MODEL = 'gpt-image-2.6-flare'
 GPT_MODELS = [GPT_DEFAULT_MODEL]
 GPT_QUALITIES = ['auto', 'high', 'medium', 'low']
 GPT_SIZES = ['auto', '1024x1024', '1536x1024', '1024x1536']
-GEMINI_MODELS = ['gemini-3-pro-image', 'gemini-3.1-flash-lite-image']
-GEMINI_SIZES = {'gemini-3-pro-image': ('1K', '2K'),
-                'gemini-3.1-flash-lite-image': ('1K',)}
+NANO_BANANA_2_1 = 'gemini-nano-banana-2.1'
+GEMINI_MODELS = [NANO_BANANA_2_1, 'gemini-3-pro-image', 'gemini-3.1-flash-lite-image']
+GEMINI_IMAGE_SIZES = ['1K', '2K', '4K']
+GEMINI_SIZES = {
+    NANO_BANANA_2_1: tuple(GEMINI_IMAGE_SIZES),
+    'gemini-3-pro-image': ('1K', '2K'),
+    'gemini-3.1-flash-lite-image': ('1K',),
+}
 ASPECT_RATIOS = ['1:1', '9:16', '16:9', '4:3', '3:4']
 
 

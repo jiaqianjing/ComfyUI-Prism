@@ -58,3 +58,22 @@ def decode_gemini_images(data):
     if not tensors:
         raise RuntimeError('No image data found in API response')
     return torch.stack(tensors, dim=0)
+
+
+def decode_nano_banana_interaction(data):
+    """Decode only final model-output images from the versioned Interactions API."""
+    status = data.get('status')
+    if status != 'completed':
+        raise RuntimeError(f'Google image interaction did not complete (status: {status or "missing"})')
+    tensors = [
+        image_bytes_to_tensor(base64.b64decode(part['data'], validate=True))
+        for step in data.get('steps', [])
+        if step.get('type') == 'model_output'
+        for part in step.get('content', [])
+        if part.get('type') == 'image' and part.get('data')
+    ]
+    if not tensors:
+        raise RuntimeError('No image data found in API response')
+    if len({tuple(t.shape) for t in tensors}) != 1:
+        raise RuntimeError('Returned images have different sizes; request an explicit size')
+    return torch.stack(tensors, dim=0)
