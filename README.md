@@ -50,6 +50,12 @@ $env:GEMINI_API_KEY = "替换为你的 Gemini 密钥"
 
 编辑节点同样输出 `IMAGE`。如果需要比较编辑前后的效果，可将原图和编辑结果分别连接到两个 `Preview Image` 节点。
 
+## 实际工作流
+
+下面是 ComfyUI 中的实测截图。左侧用 `GPT Image Generate` 生成一只蓝色茶壶，右侧将生成图直接传给 `GPT Image Edit`，只修改釉色。两张预览分别是生成结果和编辑结果，模型均为 `gpt-image-2.6-flare`，尺寸为 1024×1024。
+
+![Prism 在 ComfyUI 中的实测工作流：生成蓝色茶壶，再将釉色编辑为橙色](example/prism-openai-live.webp)
+
 ## 模型与输出选项
 
 | 插件内可选模型 | 节点支持的输出选项 |
