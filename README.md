@@ -15,21 +15,15 @@ python -m pip install -r custom_nodes/ComfyUI-Prism/requirements.txt
 
 只需设置你要使用的服务。OpenAI 节点读取 `OPENAI_API_KEY`，Gemini 节点读取 `GEMINI_API_KEY`。密钥可以在对应的官方控制台创建。[OpenAI API Keys](https://platform.openai.com/api-keys) · [Google AI Studio](https://aistudio.google.com/apikey)
 
-**Linux 或 macOS 终端**
+把插件目录中的 `config.ini.example` 复制为同目录的 `config.ini`，填入所用服务的密钥并保存：
 
-```sh
-export OPENAI_API_KEY="替换为你的 OpenAI 密钥"
-export GEMINI_API_KEY="替换为你的 Gemini 密钥"
+```ini
+[api_keys]
+GEMINI_API_KEY =
+OPENAI_API_KEY =
 ```
 
-**Windows PowerShell**
-
-```powershell
-$env:OPENAI_API_KEY = "替换为你的 OpenAI 密钥"
-$env:GEMINI_API_KEY = "替换为你的 Gemini 密钥"
-```
-
-在设置变量的同一个终端启动 ComfyUI。如果 ComfyUI 通过容器或后台服务运行，请在对应的启动环境中设置变量后重启。
+重启 ComfyUI 后生效。节点优先读取文件中对应的密钥，留空时读取同名环境变量。`config.ini` 已加入 Git 忽略列表。
 
 ## 生成第一张图
 
@@ -75,7 +69,7 @@ $env:GEMINI_API_KEY = "替换为你的 Gemini 密钥"
 | Nano Banana Pro（`gemini-3-pro-image`） | 1K 或 2K，支持 1:1、9:16、16:9、4:3、3:4。 |
 | Nano Banana 2 Lite（`gemini-3.1-flash-lite-image`） | 1K，支持上述五种宽高比。 |
 
-如果节点提示设置 API 密钥，请检查启动 ComfyUI 的进程能否读取相应环境变量。如果 Nano Banana 2 Lite提示分辨率不受支持，请将 `image_size` 设为 `1K`。
+如果节点提示缺少密钥，请检查插件目录下 `config.ini` 的 `[api_keys]` 中是否填写了对应服务的密钥，保存后重启 ComfyUI。如果使用环境变量，请确认运行 ComfyUI 的进程能读取该变量。如果 Nano Banana 2 Lite提示分辨率不受支持，请将 `image_size` 设为 `1K`。
 
 **升级旧工作流：** 如果 GPT 生成或编辑节点保存了旧模型（例如 `gpt-image-1.5` 或云雾的 `gpt-image-2-all`），请更新插件并重启 ComfyUI，在原节点的 `model` 下拉框重新选择 `gpt-image-2.6-flare` 后保存。节点 ID 和连线不变；旧模型名不会被静默替换。
 

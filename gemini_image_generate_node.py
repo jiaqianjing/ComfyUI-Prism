@@ -1,6 +1,6 @@
 """ComfyUI Gemini node: prompt/options -> IMAGE batch; calls the official image API."""
-import os
 
+from .api_keys import get_api_key
 from .image_model_options import (
     ASPECT_RATIOS, GEMINI_IMAGE_SIZES, GEMINI_MODELS, NANO_BANANA_2_1,
 )
@@ -16,10 +16,8 @@ class GeminiImageGenerateNode:
     """
 
     def __init__(self):
-        self.api_key = os.getenv("GEMINI_API_KEY")
+        self.api_key = get_api_key("GEMINI_API_KEY")
         self.api_url = "https://generativelanguage.googleapis.com"
-        if not self.api_key:
-            raise ValueError("Set GEMINI_API_KEY before starting ComfyUI")
 
     # ---------- ComfyUI 接口定义 ----------
     @classmethod

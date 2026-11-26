@@ -3,9 +3,9 @@ import torch
 import numpy as np
 from PIL import Image
 from io import BytesIO
-import os
 import requests
 
+from .api_keys import get_api_key
 from .image_model_options import (
     GPT_DEFAULT_MODEL, GPT_MODELS, GPT_QUALITIES, GPT_SIZES, validate_gpt_options,
 )
@@ -25,10 +25,8 @@ class GPTImageEditNode:
     """
 
     def __init__(self):
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = get_api_key("OPENAI_API_KEY")
         self.base_url = "https://api.openai.com/v1"
-        if not self.api_key:
-            raise ValueError("Set OPENAI_API_KEY before starting ComfyUI")
 
     # ---------- ComfyUI 接口定义 ----------
     @classmethod
