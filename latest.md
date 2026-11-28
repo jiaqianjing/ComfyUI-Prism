@@ -1,14 +1,14 @@
 # GitHub 每周关注度报告
 
 统计按 UTC 日界线；结束日期不含当天。
-本期：2026-11-20 至 2026-11-26；上期：2026-11-13 至 2026-11-19。
+本期：2026-11-21 至 2026-11-27；上期：2026-11-14 至 2026-11-20。
 
 | 指标 | 上期 | 本期 | 环比 |
 |---|---:|---:|---:|
-| 访问量 | 13 | 21 | +61.5% |
-| 访问每日独立数之和（非周去重） | 7 | 7 | +0.0% |
-| 完整克隆量 | 72 | 155 | +115.3% |
-| 完整克隆每日独立数之和（非周去重） | 53 | 116 | +118.9% |
+| 访问量 | 7 | 22 | +214.3% |
+| 访问每日独立数之和（非周去重） | 6 | 8 | +33.3% |
+| 完整克隆量 | 71 | 182 | +156.3% |
+| 完整克隆每日独立数之和（非周去重） | 53 | 130 | +145.3% |
 | Star 净增长 | 1 | 0 | — |
 | Fork 净增长 | 0 | 0 | — |
 | 订阅者 净增长 | 0 | 0 | — |
@@ -19,7 +19,7 @@ GitHub 数据可能延迟，后续采集会修订流量日数据。
 
 ## 最近一次采集
 
-2026-11-27T09:38:45.391381+00:00
+2026-11-28T08:53:41.492552+00:00
 
 累计：21 Stars · 2 Forks · 1 订阅者。
 
@@ -27,17 +27,17 @@ GitHub 数据可能延迟，后续采集会修订流量日数据。
 
 ### 来源网站
 
-- github.com：9 次，2 独立访客
+- github.com：8 次，2 独立访客
 
 ### 热门页面
 
-- /jiaqianjing/ComfyUI-Prism：9 次，4 独立访客
+- /jiaqianjing/ComfyUI-Prism：10 次，5 独立访客
 - /jiaqianjing/ComfyUI-MidjourneyHub：7 次，6 独立访客
-- /jiaqianjing/ComfyUI-MidjourneyHub/branches：2 次，1 独立访客
-- /jiaqianjing/ComfyUI-MidjourneyHub/tree/metrics：2 次，1 独立访客
 - /jiaqianjing/ComfyUI-Prism/issues：2 次，1 独立访客
 - /jiaqianjing/ComfyUI-MidjourneyHub/blob/main/README.md：1 次，1 独立访客
-- /jiaqianjing/ComfyUI-MidjourneyHub/commits：1 次，1 独立访客
-- /jiaqianjing/ComfyUI-MidjourneyHub/commits/metrics：1 次，1 独立访客
 - /jiaqianjing/ComfyUI-MidjourneyHub/issues：1 次，1 独立访客
 - /jiaqianjing/ComfyUI-MidjourneyHub/issues/6：1 次，1 独立访客
+- /jiaqianjing/ComfyUI-MidjourneyHub/issues/new：1 次，1 独立访客
+- /jiaqianjing/ComfyUI-Prism/blob/main/example/example_batch_upscale.png：1 次，1 独立访客
+- /jiaqianjing/ComfyUI-Prism/issues/6：1 次，1 独立访客
+- /jiaqianjing/ComfyUI-Prism/issues/7：1 次，1 独立访客
